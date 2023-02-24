@@ -1,0 +1,1 @@
+WELCOMETEXT = "¡Hola, bienvenido o bienvenida a Dance Holics! ¿En qué puedo ayudarte?"

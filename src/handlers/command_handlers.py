@@ -2,13 +2,14 @@ from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler
 
 from constants.commands import COMMANDS
-from constants.inline_keyboards import KEYBOARD1
+from constants.inline_keyboards import KEYBOARD1, FIRSTKEYBOARD
+from constants.text import WELCOMETEXT
 from utils.string_functions import capitalize
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not update.effective_chat: return
     await context.bot.set_my_commands(COMMANDS)
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text= WELCOMETEXT, reply_markup= FIRSTKEYBOARD)
 
 async def caps(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if (not context.args or not update.effective_chat): return

@@ -1,5 +1,7 @@
 import logging
 import telegram
+import os
+from dotenv import load_dotenv 
 from telegram.ext import ApplicationBuilder
 from handlers.callback_handlers import callback_handler
 from handlers.command_handlers import start_handler, caps_handler, buttons_handler
@@ -9,9 +11,10 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+load_dotenv()
 
 if __name__ == '__main__':
-    application = ApplicationBuilder().token('910583270:AAE9qe3oTvyfM4dargWuJkr1UVplEhHNA3A').build()
+    application = ApplicationBuilder().token(os.getenv("TELEGRAMTOKEN")).build()
     
     application.add_handler(start_handler)
     application.add_handler(echo_handler)
