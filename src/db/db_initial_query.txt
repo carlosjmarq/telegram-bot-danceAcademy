@@ -1,0 +1,43 @@
+CREATE TABLE sedes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT
+);
+
+CREATE TABLE generos_baile (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT
+);
+
+CREATE TABLE instructores (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL,
+  email TEXT NOT NULL,
+  genre TEXT NOT NULL
+);
+
+CREATE TABLE clases (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  genero_id INTEGER NOT NULL,
+  instructor_id INTEGER NOT NULL,
+  sede_id INTEGER NOT NULL,
+  horario TEXT,
+  FOREIGN KEY(sede_id) REFERENCES sedes(id),
+  FOREIGN KEY(genero_id) REFERENCES generos_baile(id),
+  FOREIGN KEY(instructor_id) REFERENCES instructores(id)
+);
+
+CREATE TABLE instructores_generos_baile (
+  instructores_id INTEGER NOT NULL,
+  generos_baile_id INTEGER NOT NULL,
+  FOREIGN KEY (instructores_id) REFERENCES instructores (id),
+  FOREIGN KEY (generos_baile_id) REFERENCES generos_baile (id),
+  PRIMARY KEY (instructores_id, generos_baile_id)
+);
+
+CREATE TABLE instructores_sedes (
+  instructores_id INTEGER NOT NULL,
+  sedes_id INTEGER NOT NULL,
+  FOREIGN KEY(instructores_id) REFERENCES instructores (id),
+  FOREIGN KEY(sedes_id) REFERENCES sedes (id),
+  PRIMARY KEY (instructores_id, sedes_id)
+);
