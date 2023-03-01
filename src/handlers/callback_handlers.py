@@ -2,6 +2,8 @@ from telegram import Update
 from telegram.ext import ContextTypes, CallbackQueryHandler
 from constants.inline_keyboards import CLASSKEYBOARD, COSTKEYBOARD, DANCECLASSBOARD, DANCECOURSEBOARD, GENREINSTRUCTORBOARD, SITESBOARD, INSTRUCTORBOARD
 from constants.text import SELECTCLASSTEXT, PRICECOURSETEXT, PRICECLASSTEXT, PROMOTIONTEXT
+from db.config import start_db
+from utils.inline_keyboards_funtions import create_inline_keyboard
 
 userdata = {}
 async def callback_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -24,7 +26,23 @@ async def callback_query_handler(update: Update, context: ContextTypes.DEFAULT_T
     elif "sedes" in query.data:
         userdata["sedes"]=query.data.split("/")[-1] if not "domicilio" in query.data else None
         print (userdata)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text= "Según tus respuestas, los instructores disponibles son:", reply_markup= INSTRUCTORBOARD)
+        con, cur = start_db()
+        dance_res = cur.execute("SELECT id FROM generos_baile WHERE nombre LIKE '{}';".format(userdata["Clases"]))
+        dance_data = dance_res.fetchone()
+        instructor_dance_res = cur.execute("SELECT instructores_id FROM instructores_generos_baile WHERE generos_baile_id = {};".format(dance_data[0]))
+        instructor_dance_data = instructor_dance_res.fetchall()
+        instructores = []
+        for row in instructor_dance_data:
+            res = cur.execute("SELECT nombre, genre FROM instructores WHERE id = {};".format(row[0]))
+            instructor = res.fetchone()
+            if userdata["genero_de_instructor"] and userdata["genero_de_instructor"].upper() != instructor[1].upper():
+                continue
+            instructores.append(instructor)
+        print(instructores)
+        instructores_data = [{"text": instructor[0], "callback_data": "contactar/{}".format(instructor[0])} for instructor in instructores]
+        instructores_keyboard = create_inline_keyboard(instructores_data)
+
+        await context.bot.send_message(chat_id=update.effective_chat.id, text= "Según tus respuestas, los instructores disponibles son:", reply_markup=instructores_keyboard)
     
     elif query.data == "clases/cursos":
         await context.bot.send_message(chat_id=update.effective_chat.id, text= "¿Qué género quieres aprender?", reply_markup= DANCECOURSEBOARD)
