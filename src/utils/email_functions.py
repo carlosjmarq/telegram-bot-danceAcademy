@@ -3,10 +3,10 @@ from email.message import EmailMessage
 from typing import Dict 
 
 email_subject = "Email test from Python" 
-sender_email_address = "carlosjmarq@gmail.com" 
+sender_email_address = "carlos97brito@hotmail.com" 
 receiver_email_address = "receiver_email@address.com" 
 email_smtp = "smtp.gmail.com" 
-email_password = "cjmm10101998" 
+email_password = "250356!Nelson." 
 
 
 def start_smtp_server() -> smtplib.SMTP:
